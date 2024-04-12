@@ -7,11 +7,11 @@ The examples explain better how the things works. I think it's important just ex
 
 ```swift
 let allUsersSortedByAge = TCFetchRequest.requestAll(from: User.self,
-                                                    orderBy: <>\.age, // Youngers first
+                                                    orderBy: .asc(\.age), // Youngers first
                                                     into: databaseMainContext)
         
 let oldestUser = TCFetchRequest.requestFirst(from: User.self,
-                                             orderBy: ><\.age,
+                                             orderBy: .desc(\.age),
                                              into: databaseMainContext)
         
 let userWithSpecificEmail = TCFetchRequest.requestFirst(from: User.self,
@@ -21,17 +21,17 @@ let userWithSpecificEmail = TCFetchRequest.requestFirst(from: User.self,
         
 let usersUnder20 = TCFetchRequest.request(from: User.self,
                                           where: \.age < 20,
-                                          orderBy: <>\.age,
+                                          orderBy: .asc(\.age),
                                           into: databaseMainContext)
         
 let usersWithSpecificNameUnder30 = TCFetchRequest.request(from: User.self,
                                                           where: \.name == "Tiago" && \.age < 30,
-                                                          orderBy: <>\.age, into: databaseMainContext)
+                                                          orderBy: .asc(\.age), into: databaseMainContext)
         
         
 let usersWithSpecificNameUnder30LimitedBy3 = TCFetchRequest.request(from: User.self,
                                                                     where: \.name == "Tiago" && \.age < 30,
-                                                                    orderBy: <>\.age,
+                                                                    orderBy: .asc(\.age),
                                                                     limitedBy: 3,
                                                                     into: databaseMainContext)
 ```
