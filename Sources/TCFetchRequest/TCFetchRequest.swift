@@ -2,7 +2,7 @@ import CoreData
 
 import CoreData
 
-struct TCFetchRequest {
+public struct TCFetchRequest {
     
     private static func createRequest<T: NSManagedObject>(predicate: TCPredicate<T>? = nil, orderBy: [TCSorting<T>]? = nil) -> NSFetchRequest<NSManagedObject> {
         
@@ -13,7 +13,7 @@ struct TCFetchRequest {
         return request
     }
     
-    static func makeFetchRequest<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>? = nil, orderBy: TCSorting<T>..., limit: Int? = nil, offset: Int? = nil, into context: NSManagedObjectContext) -> NSFetchRequest<T> {
+    public static func makeFetchRequest<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>? = nil, orderBy: TCSorting<T>..., limit: Int? = nil, offset: Int? = nil, into context: NSManagedObjectContext) -> NSFetchRequest<T> {
         
         let request = T.makeFetchRequest() as NSFetchRequest<T>
         request.predicate = predicate?.toNSPredicate()
@@ -30,7 +30,7 @@ struct TCFetchRequest {
         return request
     }
     
-    static func requestFirst<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>, orderBy: TCSorting<T>..., into context: NSManagedObjectContext) -> T? {
+    public static func requestFirst<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>, orderBy: TCSorting<T>..., into context: NSManagedObjectContext) -> T? {
         
         let request = self.createRequest(predicate: predicate, orderBy: orderBy)
         request.fetchLimit = 1
@@ -42,7 +42,7 @@ struct TCFetchRequest {
         }
     }
     
-    static func requestAll<T: NSManagedObject>(from type: T.Type, orderBy: TCSorting<T>..., into context: NSManagedObjectContext) -> [T] {
+    public static func requestAll<T: NSManagedObject>(from type: T.Type, orderBy: TCSorting<T>..., into context: NSManagedObjectContext) -> [T] {
         
         let request = self.createRequest(orderBy: orderBy)
         
@@ -53,7 +53,7 @@ struct TCFetchRequest {
         }
     }
     
-    static func request<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>, orderBy: TCSorting<T>..., limit: Int? = nil, into context: NSManagedObjectContext) -> [T] {
+    public static func request<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>, orderBy: TCSorting<T>..., limit: Int? = nil, into context: NSManagedObjectContext) -> [T] {
         
         let request = self.createRequest(predicate: predicate, orderBy: orderBy)
         
@@ -68,7 +68,7 @@ struct TCFetchRequest {
         }
     }
     
-    static func requestCount<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>? = nil, into context: NSManagedObjectContext) -> Int {
+    public static func requestCount<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>? = nil, into context: NSManagedObjectContext) -> Int {
         
         let request = self.createRequest(predicate: predicate)
         
@@ -82,7 +82,7 @@ struct TCFetchRequest {
     }
 }
 
-class TCSorting<Root> {
+public class TCSorting<Root> {
     
     private(set) var sortDescriptor: NSSortDescriptor
     
@@ -99,16 +99,16 @@ class TCSorting<Root> {
         self.sortDescriptor = NSSortDescriptor(keyPath: keyPath, ascending: ascending)
     }
     
-    static func asc<Value>(_ keyPath: KeyPath<Root, Value>) -> TCSorting<Root> {
+    public static func asc<Value>(_ keyPath: KeyPath<Root, Value>) -> TCSorting<Root> {
         .init(keyPath, orderType: .asc)
     }
     
-    static func desc<Value>(_ keyPath: KeyPath<Root, Value>) -> TCSorting<Root> {
+    public static func desc<Value>(_ keyPath: KeyPath<Root, Value>) -> TCSorting<Root> {
         .init(keyPath, orderType: .desc)
     }
 }
 
-enum OrderType {
+public enum OrderType {
     case asc
     case desc
 }
@@ -117,11 +117,11 @@ prefix operator <>
 prefix operator ><
 extension KeyPath {
     
-    static prefix func <>(rhs: KeyPath<Root, Value>) -> TCSorting<Root> {
+    public static prefix func <>(rhs: KeyPath<Root, Value>) -> TCSorting<Root> {
         TCSorting(rhs, orderType: .asc)
     }
     
-    static prefix func ><(rhs: KeyPath<Root, Value>) -> TCSorting<Root> {
+    public static prefix func ><(rhs: KeyPath<Root, Value>) -> TCSorting<Root> {
         TCSorting(rhs, orderType: .desc)
     }
 }

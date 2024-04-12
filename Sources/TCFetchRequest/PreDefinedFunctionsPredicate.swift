@@ -21,7 +21,7 @@ fileprivate class TCGenericPredicate<Root>: TCPredicate<Root> {
 }
 
 extension TCPredicate {
-    static func value<Value>(_ keyPath: KeyPath<Root, Value>, containsInSet set: Set<Value>) -> TCPredicate<Root> {
+    public static func value<Value>(_ keyPath: KeyPath<Root, Value>, containsInSet set: Set<Value>) -> TCPredicate<Root> {
         TCGenericPredicate<Root>(predicate: NSPredicate(format: "%K IN %@", argumentArray: [NSExpression(forKeyPath: keyPath).keyPath, set]) )
     }
 }

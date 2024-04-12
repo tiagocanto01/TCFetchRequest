@@ -6,18 +6,18 @@ protocol TCPredicateProtocol {
 
 prefix operator *
 extension TCPredicateProtocol {
-    static prefix func *(rhs: Self) -> NSPredicate {
+    public static prefix func *(rhs: Self) -> NSPredicate {
         rhs.toNSPredicate()
     }
 }
 
-class TCPredicate<Root>: TCPredicateProtocol {
+public class TCPredicate<Root>: TCPredicateProtocol {
     func toNSPredicate() -> NSPredicate {
         NSPredicate()
     }
 }
 
-class TCComparisonExpressionPredicate<Root, Value>: TCPredicate<Root> {
+public class TCComparisonExpressionPredicate<Root, Value>: TCPredicate<Root> {
     
     enum ComparisonOperation {
         case equals
@@ -59,34 +59,34 @@ class TCComparisonExpressionPredicate<Root, Value>: TCPredicate<Root> {
         self.value = value
     }
     
-    override func toNSPredicate() -> NSPredicate {
+    public override func toNSPredicate() -> NSPredicate {
         NSPredicate(format: self.format, argumentArray: [NSExpression(forKeyPath: self.property).keyPath,
                                                                 self.value])
     }
 }
 
 extension KeyPath {
-    static func ==(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
+    public static func ==(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
         TCCompoundPredicate(operation: .same(predicate: TCComparisonExpressionPredicate(property: lhs, comparison: .equals, value: rhs)))
     }
     
-    static func !=(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
+    public static func !=(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
         TCCompoundPredicate(operation: .same(predicate: TCComparisonExpressionPredicate(property: lhs, comparison: .notEqual, value: rhs)))
     }
     
-    static func >(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
+    public static func >(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
         TCCompoundPredicate(operation: .same(predicate: TCComparisonExpressionPredicate(property: lhs, comparison: .greaterThan, value: rhs)))
     }
     
-    static func >=(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
+    public static func >=(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
         TCCompoundPredicate(operation: .same(predicate: TCComparisonExpressionPredicate(property: lhs, comparison: .greaterThanOrEqual, value: rhs)))
     }
     
-    static func <(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
+    public static func <(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
         TCCompoundPredicate(operation: .same(predicate: TCComparisonExpressionPredicate(property: lhs, comparison: .lessThan, value: rhs)))
     }
     
-    static func <=(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
+    public static func <=(lhs: KeyPath<Root, Value>, rhs: Value) -> TCCompoundPredicate<Root> {
         TCCompoundPredicate(operation: .same(predicate: TCComparisonExpressionPredicate(property: lhs, comparison: .lessThanOrEqual, value: rhs)))
     }
 }
@@ -98,7 +98,7 @@ enum TCCompoundPredicateOperation<Root> {
     case same(predicate: TCPredicate<Root>)
 }
 
-class TCCompoundPredicate<Root>: TCPredicate<Root> {
+public class TCCompoundPredicate<Root>: TCPredicate<Root> {
     
     var operation: TCCompoundPredicateOperation<Root>
     
@@ -123,15 +123,15 @@ class TCCompoundPredicate<Root>: TCPredicate<Root> {
         return predicate
     }
     
-    static func &&(lhs: TCCompoundPredicate, rhs: TCCompoundPredicate) -> TCCompoundPredicate {
+    public static func &&(lhs: TCCompoundPredicate, rhs: TCCompoundPredicate) -> TCCompoundPredicate {
         TCCompoundPredicate(operation: .and(leftSide: lhs, rightSide: rhs))
     }
     
-    static func ||(lhs: TCCompoundPredicate, rhs: TCCompoundPredicate) -> TCCompoundPredicate {
+    public static func ||(lhs: TCCompoundPredicate, rhs: TCCompoundPredicate) -> TCCompoundPredicate {
         TCCompoundPredicate(operation: .or(leftSide: lhs, rightSide: rhs))
     }
     
-    static prefix func !(rhs: TCCompoundPredicate) -> TCCompoundPredicate {
+    public static prefix func !(rhs: TCCompoundPredicate) -> TCCompoundPredicate {
         TCCompoundPredicate(operation: .not(predicate: rhs))
     }
 }
