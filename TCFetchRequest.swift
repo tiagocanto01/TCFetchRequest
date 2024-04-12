@@ -1,5 +1,7 @@
 import CoreData
 
+import CoreData
+
 struct TCFetchRequest {
     
     private static func createRequest<T: NSManagedObject>(predicate: TCPredicate<T>? = nil, orderBy: [TCSorting<T>]? = nil) -> NSFetchRequest<NSManagedObject> {
@@ -11,7 +13,24 @@ struct TCFetchRequest {
         return request
     }
     
-    static func requestFirst<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>? = nil, orderBy: TCSorting<T>..., into context: NSManagedObjectContext) -> T? {
+    static func makeFetchRequest<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>? = nil, orderBy: TCSorting<T>..., limit: Int? = nil, offset: Int? = nil, into context: NSManagedObjectContext) -> NSFetchRequest<T> {
+        
+        let request = T.makeFetchRequest() as NSFetchRequest<T>
+        request.predicate = predicate?.toNSPredicate()
+        request.sortDescriptors = orderBy.compactMap { $0.sortDescriptor }
+        
+        if let limit {
+            request.fetchLimit = limit
+        }
+        
+        if let offset {
+            request.fetchOffset = offset
+        }
+        
+        return request
+    }
+    
+    static func requestFirst<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>, orderBy: TCSorting<T>..., into context: NSManagedObjectContext) -> T? {
         
         let request = self.createRequest(predicate: predicate, orderBy: orderBy)
         request.fetchLimit = 1
@@ -34,7 +53,7 @@ struct TCFetchRequest {
         }
     }
     
-    static func request<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>, orderBy: TCSorting<T>..., limitedBy limit: Int? = nil, into context: NSManagedObjectContext) -> [T] {
+    static func request<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>, orderBy: TCSorting<T>..., limit: Int? = nil, into context: NSManagedObjectContext) -> [T] {
         
         let request = self.createRequest(predicate: predicate, orderBy: orderBy)
         
@@ -78,6 +97,14 @@ class TCSorting<Root> {
         }
         
         self.sortDescriptor = NSSortDescriptor(keyPath: keyPath, ascending: ascending)
+    }
+    
+    static func asc<Value>(_ keyPath: KeyPath<Root, Value>) -> TCSorting<Root> {
+        .init(keyPath, orderType: .asc)
+    }
+    
+    static func desc<Value>(_ keyPath: KeyPath<Root, Value>) -> TCSorting<Root> {
+        .init(keyPath, orderType: .desc)
     }
 }
 
