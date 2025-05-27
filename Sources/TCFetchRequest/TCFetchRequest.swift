@@ -13,7 +13,7 @@ public struct TCFetchRequest {
         return request
     }
     
-    public static func makeFetchRequest<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>? = nil, orderBy: TCSorting<T>..., limit: Int? = nil, offset: Int? = nil, into context: NSManagedObjectContext) -> NSFetchRequest<T> {
+    public static func makeFetchRequest<T: NSManagedObject>(from type: T.Type, where predicate: TCPredicate<T>? = nil, orderBy: TCSorting<T>..., limit: Int? = nil, offset: Int? = nil) -> NSFetchRequest<T> {
         
         let request = T.makeFetchRequest() as NSFetchRequest<T>
         request.predicate = predicate?.toNSPredicate()
